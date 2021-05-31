@@ -1,4 +1,5 @@
 import itertools
+import logging
 import math
 from typing import Any, Iterable, Iterator, Tuple, TypeVar
 
@@ -14,6 +15,8 @@ from .types import (
     Stage,
     WriteableArray,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def chunk_keys(
@@ -41,7 +44,7 @@ def copy_stage(
         # calling np.asarray here allows the source to be a dask array
         # TODO: could we asyncify this to operate in a streaming fashion
         # make sure this is not happening inside a dask scheduler
-        print(f"_copy_chunk({chunk_key})")
+        logger.debug(f"_copy_chunk({chunk_key})")
         with dask.config.set(scheduler="single-threaded"):
             data = np.asarray(source[chunk_key])
         target[chunk_key] = data
